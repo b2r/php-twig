@@ -3,7 +3,10 @@ b2rPHP: Twig
 
 Twig composition
 
+[![Build Status](https://travis-ci.org/b2r/php-twig.svg?branch=master)](https://travis-ci.org/b2r/php-twig)
+
 - [CHANGELOG](CHANGELOG.md)
+- [Packagist](https://packagist.org/packages/b2r/twig)
 
 ## Features
 - Fluent interface

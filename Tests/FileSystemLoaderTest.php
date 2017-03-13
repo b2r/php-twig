@@ -4,12 +4,12 @@ namespace b2r\Component\Twig;
 
 require_once __DIR__ . '/boot.php';
 
-class FileSystemLoaderTest extends Base
+class FilesystemLoaderTest extends Base
 {
     public function testBasic()
     {
-        $loader = new Loader\FileSystemLoader(__DIR__ . '/templates');
-        $this->is($loader instanceof Loader\FileSystemLoader);
+        $loader = new Loader\FilesystemLoader(__DIR__ . '/templates');
+        $this->is($loader instanceof Loader\FilesystemLoader);
 
         $this->is(!$loader->exists('sample'));
 

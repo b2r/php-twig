@@ -52,7 +52,7 @@ class TwigTest extends Base
         $loader = $this->twig->getLoader();
         $this->is($loader instanceof Loader);
         $this->is($loader->getArrayLoader() instanceof Loader\ArrayLoader);
-        $this->is($loader->getFileSystemLoader() instanceof Loader\FileSystemLoader);
+        $this->is($loader->getFileSystemLoader() instanceof Loader\FilesystemLoader);
     }
 
     public function testExtension()
