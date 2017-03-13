@@ -4,7 +4,7 @@ namespace b2r\Component\Twig;
 
 use b2r\Component\Twig\Loader\ {
     ArrayLoader,
-    FileSystemLoader
+    FilesystemLoader
 };
 use b2r\Component\SimpleAccessor\Getter;
 use b2r\Component\PropertyMethodDelegator\ {
@@ -15,7 +15,7 @@ use b2r\Component\PropertyMethodDelegator\ {
 /**
  * Smart Twig Loader
  *
- * - FileSystemLoader + ArrayLoader
+ * - FilesystemLoader + ArrayLoader
  */
 class Loader extends \Twig_Loader_Chain implements PropertyMethodDelegatorInterface
 {
@@ -33,19 +33,19 @@ class Loader extends \Twig_Loader_Chain implements PropertyMethodDelegatorInterf
     private $array = null;
 
     /**
-     * @var Loader\FileSystemLoader
+     * @var Loader\FilesystemLoader
      */
     private $filesystem = null;
 
     /**
      * Construcotr
      *
-     * @param string|array $paths FileSystemLoader template path
+     * @param string|array $paths FilesystemLoader template path
      * @param array $templates  ArrayLoader templates
      */
     public function __construct($paths = [], array $templates = [])
     {
-        // FileSystem loader
+        // Filesystem loader
         $this->filesystem = new FilesystemLoader($paths);
         $this->addLoader($this->filesystem);
 
@@ -59,7 +59,7 @@ class Loader extends \Twig_Loader_Chain implements PropertyMethodDelegatorInterf
         return $this->array;
     }
 
-    public function getFileSystemLoader(): FileSystemLoader
+    public function getFilesystemLoader(): FilesystemLoader
     {
         return $this->filesystem;
     }
