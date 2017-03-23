@@ -2,7 +2,6 @@
 
 #### Member docs
 - [Environment](Environment.md)
-- [Loader](Loader.md)
 
 #### Usage
 

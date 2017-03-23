@@ -4,20 +4,50 @@ b2r\Component\Twig\Environment
 **Flags:** `class` 
 
 #### Index
-[Parents](#parents) | [Methods](#methods)
+[Parents](#parents) | [Implements](#implements) | [Uses](#uses) | [Methods](#methods)
 Extends
 ----------
 - Twig_Environment
 
+Implements
+----------
+- b2r\Component\PropertyMethodDelegator\PropertyMethodDelegatorInterface
+
+Uses
+----------
+- b2r\Component\SimpleAccessor\Getter
+- b2r\Component\PropertyMethodDelegator\PropertyMethodDelegator
+
 Methods
 ----------
+- [__call](#__call)
 - [__construct](#__construct) Constructor
-- [addExtensions](#addextensions)
-- [addFilter](#addfilter)
-- [addFilters](#addfilters)
-- [addFunction](#addfunction)
-- [addFunctions](#addfunctions)
-- [addGlobals](#addglobals) Add globals
+- [__get](#__get)
+- [addTemplate](#addtemplate)
+- [addTemplates](#addtemplates)
+- [getArrayLoader](#getarrayloader)
+- [getFilesystemLoader](#getfilesystemloader)
+- [getLoader](#getloader)
+- [getPropertyMethodDelegatorInfo](#getpropertymethoddelegatorinfo)
+- [resolveDelegateMethod](#resolvedelegatemethod) Resolve delegate method
+- [setTemplate](#settemplate)
+- [setTemplates](#settemplates) Set templates
+
+----------------------------------------
+
+### __call
+
+`public function __call($name, $arguments)`
+
+**Flags:** `public` 
+
+#### Parameters
+| name       | type | default | description | 
+| ---------- | ---- | ------- | ----------- | 
+| $name      |      |         |             | 
+| $arguments |      |         |             | 
+
+[(Back to index)](#index)
 
 ----------------------------------------
 
@@ -40,100 +70,148 @@ Constructor
 
 ----------------------------------------
 
-### addExtensions
+### __get
 
-`public function addExtensions($extensions): self`
+`public function __get($name)`
 
 **Flags:** `public` 
 
 #### Parameters
-| name        | type     | default | description                                   | 
-| ----------- | -------- | ------- | --------------------------------------------- | 
-| $extensions | iterable |         | [Twig_Extension $instance\|string $className] | 
+| name  | type | default | description | 
+| ----- | ---- | ------- | ----------- | 
+| $name |      |         |             | 
 
 [(Back to index)](#index)
 
 ----------------------------------------
 
-### addFilter
+### addTemplate
 
-`public function addFilter($name, $filter): self`
+`public function addTemplate($name, $template)`
 
 **Flags:** `public` 
 
 #### Parameters
-| name    | type                       | default | description | 
-| ------- | -------------------------- | ------- | ----------- | 
-| $name   |                            |         |             | 
-| $filter | Twig_SimpleFilter, Closure | null    |             | 
+| name      | type   | default | description | 
+| --------- | ------ | ------- | ----------- | 
+| $name     | string |         |             | 
+| $template | string |         |             | 
+
+
+- @alias [setTemplate](#settemplate)
 
 [(Back to index)](#index)
 
 ----------------------------------------
 
-### addFilters
+### addTemplates
 
-`public function addFilters($filters): self`
+`public function addTemplates($templates)`
 
 **Flags:** `public` 
 
 #### Parameters
-| name     | type     | default | description                                         | 
-| -------- | -------- | ------- | --------------------------------------------------- | 
-| $filters | iterable |         | [string $name => Twig_SimpleFilter\|Closure $value] | 
+| name       | type  | default | description | 
+| ---------- | ----- | ------- | ----------- | 
+| $templates | array |         |             | 
+
+
+- @alias [setTemplates](#settemplates)
 
 [(Back to index)](#index)
 
 ----------------------------------------
 
-### addFunction
+### getArrayLoader
 
-`public function addFunction($name, $function)`
+`public function getArrayLoader(): Twig_Loader_Array`
 
 **Flags:** `public` 
-
-#### Parameters
-| name      | type                         | default | description | 
-| --------- | ---------------------------- | ------- | ----------- | 
-| $name     | string                       |         |             | 
-| $function | Twig_SimpleFunction, Closure | null    |             | 
 
 [(Back to index)](#index)
 
 ----------------------------------------
 
-### addFunctions
+### getFilesystemLoader
 
-`public function addFunctions($functions): self`
+`public function getFilesystemLoader(): b2r\Component\Twig\Loader\FilesystemLoader`
 
 **Flags:** `public` 
-
-#### Parameters
-| name       | type     | default | description                                              | 
-| ---------- | -------- | ------- | -------------------------------------------------------- | 
-| $functions | iterable |         | [string $name => Twig_SimpleFunction\|Closure $function] | 
 
 [(Back to index)](#index)
 
 ----------------------------------------
 
-### addGlobals
+### getLoader
 
-`public function addGlobals($globals): self`
+`public function getLoader(): Twig_Loader_Chain`
+
+**Flags:** `public` 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### getPropertyMethodDelegatorInfo
+
+`public static function getPropertyMethodDelegatorInfo(): array`
+
+**Flags:** `public`  `static` 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### resolveDelegateMethod
+
+`public function resolveDelegateMethod($name): array|false`
 
 **Flags:** `public` 
 
 #### Parameters
-| name     | type     | default | description | 
-| -------- | -------- | ------- | ----------- | 
-| $globals | iterable |         |             | 
+| name  | type   | default | description | 
+| ----- | ------ | ------- | ----------- | 
+| $name | string |         | Method name | 
 
 
-Add globals
+Resolve delegate method
 
-#### $globals
-- Key: Global name
-- Value: Global value
+[(Back to index)](#index)
+
+----------------------------------------
+
+### setTemplate
+
+`public function setTemplate($name, $template): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name      | type   | default | description | 
+| --------- | ------ | ------- | ----------- | 
+| $name     | string |         |             | 
+| $template | string |         |             | 
+
+
+- @invoke `Twig_Loader_Array::setTemplate`
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### setTemplates
+
+`public function setTemplates($templates): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name       | type  | default | description                        | 
+| ---------- | ----- | ------- | ---------------------------------- | 
+| $templates | array |         | [string $name => string $template] | 
+
+
+Set templates
 
 [(Back to index)](#index)
 
