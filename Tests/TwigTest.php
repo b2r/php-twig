@@ -8,7 +8,7 @@ class MySampleTwigExtension extends \Twig_Extension
 {
     public function getFilters()
     {
-        return [new \Twig_SimpleFilter('l', function ($value) {
+        return [new \Twig_Filter('l', function ($value) {
             return strtolower($value);
         })];
     }
@@ -49,10 +49,10 @@ class TwigTest extends Base
 
     public function testLoader()
     {
-        $loader = $this->twig->getLoader();
-        $this->is($loader instanceof Loader);
-        $this->is($loader->getArrayLoader() instanceof Loader\ArrayLoader);
-        $this->is($loader->getFileSystemLoader() instanceof Loader\FilesystemLoader);
+        $twig = $this->twig;
+        $this->is($twig->getLoader() instanceof \Twig_Loader_Chain);
+        $this->is($twig->getArrayLoader() instanceof \Twig_Loader_Array);
+        $this->is($twig->getFileSystemLoader() instanceof Loader\FilesystemLoader);
     }
 
     public function testExtension()
@@ -65,25 +65,54 @@ class TwigTest extends Base
 
     public function testFilter()
     {
-        $twig = $this->twig;
-        $twig->addFilters(['u' => function ($value) {
-            return strtoupper($value);
-        }]);
+        $twig = new Twig();
+
+
+        $twig->addFilters([
+            'u' => function ($value) {
+                return strtoupper($value);
+            },
+            new \Twig_Filter('t', function ($value) {
+                return trim($value);
+            }),
+        ]);
+
+        $twig->addFilter(new \Twig_Filter('l', function ($value) {
+                return strtolower($value);
+        }));
 
         $ac = $twig->name('world')->template('name', '{{ name|u }}')->render();
+        $this->is('WORLD', $ac);
+
+        $ac = $twig->name('WORLD')->template('name', '{{ name|l }}')->render();
+        $this->is('world', $ac);
+
+        $ac = $twig->name('     WORLD     ')->template('name', '{{ name|t }}')->render();
         $this->is('WORLD', $ac);
     }
 
     public function testFunctions()
     {
-        $twig = $this->twig;
+        $twig = new Twig();
         $twig->addFunctions([
             'x2' => function ($value) {
                 return $value * 2;
             },
+            new \Twig_Function('x3', function ($value) {
+                return $value * 3;
+            }),
         ]);
+
+        $twig->addFunction(new \Twig_Function('x4', function ($value) {
+            return $value * 4;
+        }));
+
         $ac = $twig->template('x2', '{{ x2(2) }}')->render();
         $this->is('4', $ac);
+        $ac = $twig->template('x3', '{{ x3(2) }}')->render();
+        $this->is('6', $ac);
+        $ac = $twig->template('x4', '{{ x4(2) }}')->render();
+        $this->is('8', $ac);
     }
 
     public function testGlobal()
@@ -169,5 +198,30 @@ class TwigTest extends Base
         $twig = $this->twig;
         $twig->setTemplate('hello');
         $this->is('hello', $twig->getTemplateName());
+    }
+
+    public function testToString()
+    {
+        $twig = $this->twig;
+        $twig->template('Hello', 'Hello, {{ name }}')->name('world');
+        $ex = 'Hello, world';
+        $this->is($ex, $twig->toString());
+        $this->is($ex, (string)$twig);
+    }
+
+    /**
+     * @expectedException \Twig_Error_Loader
+     */
+    public function testUndefinedTemplate()
+    {
+        $this->twig->render('undefined');
+    }
+
+    /**
+     * @expectedException b2r\Component\Exception\InvalidMethodException
+     */
+    public function testCallException()
+    {
+        $this->twig->undefinedMethod(1, 2, 3, 4, 5);
     }
 }
