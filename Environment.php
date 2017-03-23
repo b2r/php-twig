@@ -2,14 +2,42 @@
 
 namespace b2r\Component\Twig;
 
-use Closure;
+use b2r\Component\SimpleAccessor\Getter;
+use b2r\Component\PropertyMethodDelegator\ {
+    PropertyMethodDelegator,
+    PropertyMethodDelegatorInterface
+};
 use Twig_Environment;
-use Twig_Extension;
-use Twig_SimpleFilter as Filter;
-use Twig_SimpleFunction as Func;
+use Twig_Loader_Chain;
+use Twig_Loader_Array;
+use b2r\Component\Twig\Loader\FilesystemLoader;
 
-class Environment extends Twig_Environment
+class Environment extends Twig_Environment implements PropertyMethodDelegatorInterface
 {
+    use Getter;
+    use PropertyMethodDelegator;
+
+    protected static $propertyMethodDelegator = [
+        'loader'     => [],
+        'filesystem' => [],
+        'array'      => [],
+    ];
+
+    /**
+     * @var Twig_Loader_Array
+     */
+    protected $array = null;
+
+    /**
+     * @var Loader\FilesystemLoader
+     */
+    protected $filesystem = null;
+
+    /**
+     * @var Twig_Loader_Chain
+     */
+    protected $loader;
+
     /**
      * Constructor
      *
@@ -18,88 +46,78 @@ class Environment extends Twig_Environment
      */
     public function __construct($paths = [], array $options = [])
     {
-        parent::__construct(new Loader($paths), $options);
+        $this->loader = $loader = new Twig_Loader_Chain();
+
+        // Filesystem loader
+        $this->filesystem = new FilesystemLoader($paths);
+        $loader->addLoader($this->filesystem);
+
+        // Array loader
+        $this->array = new Twig_Loader_Array($options['templates'] ?? []);
+        $loader->addLoader($this->array);
+
+        parent::__construct($this->loader, $options);
+    }
+
+    #------------------------------------------------------------
+    # Accessor
+    #------------------------------------------------------------
+
+    public function getArrayLoader(): Twig_Loader_Array
+    {
+        return $this->array;
+    }
+
+    public function getFilesystemLoader(): FilesystemLoader
+    {
+        return $this->filesystem;
+    }
+
+    public function getLoader(): Twig_Loader_Chain
+    {
+        return $this->loader;
+    }
+
+    #------------------------------------------------------------
+    # ArrayLoader Helper
+    #------------------------------------------------------------
+
+    /**
+     * @alias setTemplate
+     */
+    public function addTemplate(string $name, string $template)
+    {
+        return $this->setTemplate($name, $template);
     }
 
     /**
-     * @param iterable $extensions `[Twig_Extension $instance|string $className]`
+     * @alias setTemplates
+     */
+    public function addTemplates(array $templates)
+    {
+        return $this->setTemplates($templates);
+    }
+
+    /**
+     * @invoke Twig_Loader_Array::setTemplate
      * @return self
      */
-    public function addExtensions($extensions)
+    public function setTemplate(string $name, string $template)
     {
-        foreach ($extensions as $extension) {
-            if (is_string($extension) && class_exists($extension)) {
-                $extension = new $extension();
-            }
-            $this->addExtension($extension);
-        }
+        $this->array->setTemplate($name, $template);
         return $this;
     }
 
     /**
-     * @param Twig_SimpleFilter|Closure $filter
-     * @return self
-     */
-    public function addFilter($name, $filter = null)
-    {
-        if ($filter instanceof Closure) {
-            $filter = new Filter($name, $filter);
-        }
-        parent::addFilter($name, $filter);
-        return $this;
-    }
-
-    /**
-     * @param iterable $filters `[string $name => Twig_SimpleFilter|Closure $value]`
-     * @return self
-     */
-    public function addFilters($filters)
-    {
-        foreach ($filters as $name => $filter) {
-            $this->addFilter($name, $filter);
-        }
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param Twig_SimpleFunction|Closure $function
-     */
-    public function addFunction($name, $function = null)
-    {
-        if ($function instanceof Closure) {
-            $function = new Func($name, $function);
-        }
-        parent::addFunction($name, $function);
-        return $this;
-    }
-
-    /**
-     * @param iterable $functions `[string $name => Twig_SimpleFunction|Closure $function]`
-     * @return self
-     */
-    public function addFunctions($functions)
-    {
-        foreach ($functions as $name => $function) {
-            $this->addFunction($name, $function);
-        }
-        return $this;
-    }
-
-    /**
-     * Add globals
+     * Set templates
      *
-     * #### $globals
-     * - Key: Global name
-     * - Value: Global value
-     *
-     * @param iterable $globals
+     * @param array $templates [string $name => string $template]
      * @return self
      */
-    public function addGlobals($globals)
+    public function setTemplates(array $templates)
     {
-        foreach ($globals as $name => $value) {
-            $this->addGlobal($name, $value);
+        foreach ($templates as $name => $template) {
+            $this->array->setTemplate($name, $template);
         }
         return $this;
     }
