@@ -2,7 +2,10 @@
 
 namespace b2r\Component\Twig;
 
-use b2r\Component\Exception\InvalidArgumentException;
+use b2r\Component\Exception\ {
+    InvalidArgumentException,
+    InvalidMethodException
+};
 use b2r\Component\SimpleAccessor\Getter;
 use b2r\Component\PropertyMethodDelegator\ {
     PropertyMethodDelegator,
@@ -21,10 +24,10 @@ class Twig implements PropertyMethodDelegatorInterface
 {
     use Getter;
     use PropertyMethodDelegator;
+    use Traits\EnvironmentComposition;
 
     protected static $propertyMethodDelegator = [
-        'twig'   => [],
-        'loader' => [],
+        'twig' => [],
     ];
 
     /**
@@ -33,11 +36,6 @@ class Twig implements PropertyMethodDelegatorInterface
      * @var array
      */
     protected $context = [];
-
-    /**
-     * @var Loader
-     */
-    protected $loader = null;
 
     /**
      * Current template name
@@ -56,8 +54,7 @@ class Twig implements PropertyMethodDelegatorInterface
      */
     public function __construct()
     {
-        $this->twig = new Environment(...func_get_args());
-        $this->loader = $this->twig->getLoader();
+        $this->initEnvironment(new Environment(...func_get_args()));
     }
 
     /**
@@ -79,7 +76,8 @@ class Twig implements PropertyMethodDelegatorInterface
      *
      * @param string $name
      * @param array $arguments
-     * @return self
+     * @return mixed
+     * @throws b2r\Component\Exception\InvalidMethodException
      */
     public function __call($name, $arguments)
     {
@@ -89,8 +87,11 @@ class Twig implements PropertyMethodDelegatorInterface
             return call_user_func_array($method, $arguments);
         }
         // Assume context setter
-        $value = count($arguments) <= 1 ? array_shift($arguments) : $arguments;
-        return $this->bindValue($name, $value);
+        if (count($arguments) === 1) {
+            return $this->bindValue($name, $arguments[0]);
+        }
+        // Throw
+        throw new InvalidMethodException($this, $name);
     }
 
     /**
@@ -117,9 +118,9 @@ class Twig implements PropertyMethodDelegatorInterface
      * - `(array $values)`
      *
      * @return self
+     * @throws b2r\Component\Exception\InvalidArgumentException
      * @invoke bindValue
      * @invoke bindArray
-     * @throws b2r\Component\Exception\InvalidArgumentException
      */
     public function bind()
     {
@@ -156,8 +157,6 @@ class Twig implements PropertyMethodDelegatorInterface
     }
 
     /**
-     * Clear context
-     *
      * @return self
      */
     public function clearContext()
@@ -198,26 +197,6 @@ class Twig implements PropertyMethodDelegatorInterface
         return $this->context[$name] ?? $default;
     }
 
-    public function getEngine(): Environment
-    {
-        return $this->twig;
-    }
-
-    public function getEnv(): Environment
-    {
-        return $this->twig;
-    }
-
-    public function getEnvironment(): Environment
-    {
-        return $this->twig;
-    }
-
-    public function getLoader(): Loader
-    {
-        return $this->loader;
-    }
-
     public function getTemplateName(): string
     {
         return $this->template;
@@ -232,7 +211,7 @@ class Twig implements PropertyMethodDelegatorInterface
     }
 
     /**
-     * Prepare name and context
+     * Prepare template name and context
      *
      * @param string|null $name
      * @param array|null $context
@@ -252,7 +231,7 @@ class Twig implements PropertyMethodDelegatorInterface
 
     /**
      * Render
-     * 
+     *
      * @param string $name Template name
      * @param array $context
      * @invoke Twig_Environment::render
@@ -266,9 +245,6 @@ class Twig implements PropertyMethodDelegatorInterface
     /**
      * Save renderd string to file
      *
-     * @param string $filename
-     * @param string|null $name
-     * @param array $context
      * @return self
      */
     public function save(string $filename, string $name = null, array $context = [])
@@ -296,7 +272,7 @@ class Twig implements PropertyMethodDelegatorInterface
     {
         $this->template = $name;
         if ($source) {
-            $this->loader->setTemplate($name, $source);
+            $this->twig->setTemplate($name, $source);
         }
         return $this;
     }
@@ -307,6 +283,14 @@ class Twig implements PropertyMethodDelegatorInterface
     public function template(string $name, string $source = null)
     {
         return $this->setTemplate($name, $source);
+    }
+
+    /**
+     * @alias render
+     */
+    public function toString(): string
+    {
+        return $this->render();
     }
 
     /**
