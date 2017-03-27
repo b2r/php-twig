@@ -8,11 +8,6 @@ use b2r\Component\Exception\ {
 };
 use b2r\Component\SimpleAccessor\Getter;
 
-// use b2r\Component\PropertyMethodDelegator\ {
-//     PropertyMethodDelegator,
-//     PropertyMethodDelegatorInterface
-// };
-
 /**
  * Twig composition
  *
@@ -21,16 +16,11 @@ use b2r\Component\SimpleAccessor\Getter;
  * - Smart loader
  * - Context container
  */
-class Twig //implements PropertyMethodDelegatorInterface
+class Twig
 {
     use Getter;
-    //use PropertyMethodDelegator;
     use Traits\EnvironmentComposition;
     use Traits\LoaderComposition;
-
-    // protected static $propertyMethodDelegator = [
-    //     'twig' => [],
-    // ];
 
     /**
      * Context container
@@ -47,11 +37,6 @@ class Twig //implements PropertyMethodDelegatorInterface
     protected $template = null;
 
     /**
-     * @var Environment Twig core instance
-     */
-    // protected $twig = null;
-
-    /**
      * Constructor
      *
      * @param string|array Template paths
@@ -61,8 +46,6 @@ class Twig //implements PropertyMethodDelegatorInterface
     {
         $loader = $this->initLoader($paths, $options['templates'] ?? []);
         $this->initEnvironment($loader, $options);
-        // $this->initEnvironment(new Twig_Environment($loader, $options));
-        //$this->initEnvironment(new Environment(...func_get_args()));
     }
 
     /**
@@ -89,11 +72,6 @@ class Twig //implements PropertyMethodDelegatorInterface
      */
     public function __call($name, $arguments)
     {
-        // // Invoke method
-        // $method = $this->resolveDelegateMethod($name);
-        // if ($method) {
-        //     return call_user_func_array($method, $arguments);
-        // }
         // Assume context setter
         if (count($arguments) === 1) {
             return $this->bindValue($name, $arguments[0]);

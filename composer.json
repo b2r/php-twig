@@ -13,7 +13,6 @@
     ],
     "require": {
         "php": ">=7.0",
-        "b2r/property-method-delegator": "~0.1",
         "b2r/simple-accessor": "~0.1",
         "twig/twig": "~2.0"
     },

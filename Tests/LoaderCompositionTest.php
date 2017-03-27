@@ -19,6 +19,7 @@ class LoaderCompositionTest extends Base
     public function testBasic()
     {
         $loader = new MyLoaderComposition();
+
         // ArrayLoader
         $loader->setTemplate('hello', 'Hello, {{ name }}');
         $loader->setTemplates(['hello2', 'Hello, {{ name }}']);
