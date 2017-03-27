@@ -7,10 +7,6 @@ use b2r\Component\Exception\ {
     InvalidMethodException
 };
 use b2r\Component\SimpleAccessor\Getter;
-use b2r\Component\PropertyMethodDelegator\ {
-    PropertyMethodDelegator,
-    PropertyMethodDelegatorInterface
-};
 
 /**
  * Twig composition
@@ -20,15 +16,11 @@ use b2r\Component\PropertyMethodDelegator\ {
  * - Smart loader
  * - Context container
  */
-class Twig implements PropertyMethodDelegatorInterface
+class Twig
 {
     use Getter;
-    use PropertyMethodDelegator;
     use Traits\EnvironmentComposition;
-
-    protected static $propertyMethodDelegator = [
-        'twig' => [],
-    ];
+    use Traits\LoaderComposition;
 
     /**
      * Context container
@@ -45,16 +37,15 @@ class Twig implements PropertyMethodDelegatorInterface
     protected $template = null;
 
     /**
-     * @var Environment Twig core instance
-     */
-    protected $twig = null;
-
-    /**
      * Constructor
+     *
+     * @param string|array Template paths
+     * @param array Environment options
      */
-    public function __construct()
+    public function __construct($paths = [], array $options = [])
     {
-        $this->initEnvironment(new Environment(...func_get_args()));
+        $loader = $this->initLoader($paths, $options['templates'] ?? []);
+        $this->initEnvironment($loader, $options);
     }
 
     /**
@@ -81,11 +72,6 @@ class Twig implements PropertyMethodDelegatorInterface
      */
     public function __call($name, $arguments)
     {
-        // Invoke method
-        $method = $this->resolveDelegateMethod($name);
-        if ($method) {
-            return call_user_func_array($method, $arguments);
-        }
         // Assume context setter
         if (count($arguments) === 1) {
             return $this->bindValue($name, $arguments[0]);
@@ -254,6 +240,14 @@ class Twig implements PropertyMethodDelegatorInterface
     }
 
     /**
+     * @alias bind
+     */
+    public function set()
+    {
+        return $this->bind(...func_get_args());
+    }
+
+    /**
      * @alias bindValue
      */
     public function setContextValue(string $name, $value)
@@ -272,7 +266,7 @@ class Twig implements PropertyMethodDelegatorInterface
     {
         $this->template = $name;
         if ($source) {
-            $this->twig->setTemplate($name, $source);
+            $this->arrayLoader->setTemplate($name, $source);
         }
         return $this;
     }

@@ -11,7 +11,6 @@ class ArrayLoaderTest extends Base
         $twig = new Twig();
         $loader = $twig->loader;
 
-
         $this->is($loader instanceof \Twig_Loader_Chain);
 
         $twig->addTemplate('foo', 'FOO');

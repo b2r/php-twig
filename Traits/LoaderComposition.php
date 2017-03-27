@@ -1,37 +1,22 @@
 <?php
 
-namespace b2r\Component\Twig;
+namespace b2r\Component\Twig\Traits;
 
-use b2r\Component\SimpleAccessor\Getter;
-use b2r\Component\PropertyMethodDelegator\ {
-    PropertyMethodDelegator,
-    PropertyMethodDelegatorInterface
-};
-use Twig_Environment;
 use Twig_Loader_Chain;
 use Twig_Loader_Array;
 use b2r\Component\Twig\Loader\FilesystemLoader;
 
-class Environment extends Twig_Environment implements PropertyMethodDelegatorInterface
+trait LoaderComposition
 {
-    use Getter;
-    use PropertyMethodDelegator;
-
-    protected static $propertyMethodDelegator = [
-        'loader'     => [],
-        'filesystem' => [],
-        'array'      => [],
-    ];
-
     /**
      * @var Twig_Loader_Array
      */
-    protected $array = null;
+    protected $arrayLoader = null;
 
     /**
-     * @var Loader\FilesystemLoader
+     * @var b2r\Component\Twig\Loader\FilesystemLoader;
      */
-    protected $filesystem = null;
+    protected $fileLoader = null;
 
     /**
      * @var Twig_Loader_Chain
@@ -39,24 +24,18 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
     protected $loader = null;
 
     /**
-     * Constructor
-     *
-     * @param string|array $path Template directory
-     * @param array $options Environment options
+     * @param string|array File template paths
+     * @param array Array templates
+     * @return Twig_Loader_Chain
      */
-    public function __construct($paths = [], array $options = [])
+    protected function initLoader($paths = [], array $templates = [])
     {
-        $this->loader = $loader = new Twig_Loader_Chain();
-
-        // Filesystem loader
-        $this->filesystem = new FilesystemLoader($paths);
-        $loader->addLoader($this->filesystem);
-
-        // Array loader
-        $this->array = new Twig_Loader_Array($options['templates'] ?? []);
-        $loader->addLoader($this->array);
-
-        parent::__construct($this->loader, $options);
+        $this->loader = new Twig_Loader_Chain();
+        $this->fileLoader = new FilesystemLoader($paths);
+        $this->arrayLoader = new Twig_Loader_Array($templates);
+        $this->loader->addLoader($this->fileLoader);
+        $this->loader->addLoader($this->arrayLoader);
+        return $this->loader;
     }
 
     #------------------------------------------------------------
@@ -65,17 +44,17 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
 
     public function getArrayLoader(): Twig_Loader_Array
     {
-        return $this->array;
+        return $this->arrayLoader;
     }
 
     public function getFileLoader(): FilesystemLoader
     {
-        return $this->filesystem;
+        return $this->fileLoader;
     }
 
     public function getFilesystemLoader(): FilesystemLoader
     {
-        return $this->filesystem;
+        return $this->fileLoader;
     }
 
     public function getLoader(): Twig_Loader_Chain
@@ -84,7 +63,7 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
     }
 
     #------------------------------------------------------------
-    # ArrayLoader Helper
+    # ArrayLoader
     #------------------------------------------------------------
 
     /**
@@ -109,7 +88,7 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
      */
     public function setTemplate(string $name, string $template)
     {
-        $this->array->setTemplate($name, $template);
+        $this->arrayLoader->setTemplate($name, $template);
         return $this;
     }
 
@@ -122,24 +101,24 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
     public function setTemplates(array $templates)
     {
         foreach ($templates as $name => $template) {
-            $this->array->setTemplate($name, $template);
+            $this->arrayLoader->setTemplate($name, $template);
         }
         return $this;
     }
 
     #------------------------------------------------------------
-    # FilesystemLoader Helper
+    # FileLoader
     #------------------------------------------------------------
 
     public function addSuffix(string $suffix)
     {
-        $this->filesystem->addSuffix($suffix);
+        $this->fileLoader->addSuffix($suffix);
         return $this;        
     }
 
     public function addSuffixes(array $suffixes)
     {
-        $this->filesystem->addSuffixes($suffixes);
+        $this->fileLoader->addSuffixes($suffixes);
         return $this;        
     }
 }
