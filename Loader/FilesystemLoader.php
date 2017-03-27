@@ -40,7 +40,7 @@ class FilesystemLoader extends \Twig_Loader_Filesystem
         return $this;
     }
 
-    protected function findTemplate($name)
+    protected function findTemplate($name, $throw = true)
     {
         $result = parent::findTemplate($name, false);
         if ($result) {
@@ -53,6 +53,7 @@ class FilesystemLoader extends \Twig_Loader_Filesystem
                 return $result;
             }
         }
-        return false;
+
+        return $throw ? parent::findTemplate($name, true) : false;
     }
 }

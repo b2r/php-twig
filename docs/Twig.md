@@ -16,7 +16,6 @@ Twig composition
 
 #### Member docs
 - [Environment](Environment.md)
-- [Loader](Loader.md)
 
 #### Usage
 
@@ -88,6 +87,7 @@ Uses
 ----------
 - b2r\Component\SimpleAccessor\Getter
 - b2r\Component\PropertyMethodDelegator\PropertyMethodDelegator
+- b2r\Component\Twig\Traits\EnvironmentComposition
 
 Methods
 ----------
@@ -97,10 +97,18 @@ Methods
 - [__set](#__set) Magic setter
 - [__toString](#__tostring)
 - [addContext](#addcontext)
+- [addExtension](#addextension)
+- [addExtensions](#addextensions)
+- [addFilter](#addfilter)
+- [addFilters](#addfilters)
+- [addFunction](#addfunction)
+- [addFunctions](#addfunctions)
+- [addGlobal](#addglobal)
+- [addGlobals](#addglobals)
 - [bind](#bind) Bind context value
 - [bindArray](#bindarray)
 - [bindValue](#bindvalue)
-- [clearContext](#clearcontext) Clear context
+- [clearContext](#clearcontext)
 - [context](#context)
 - [display](#display)
 - [getContext](#getcontext)
@@ -118,13 +126,14 @@ Methods
 - [setContextValue](#setcontextvalue)
 - [setTemplate](#settemplate) Set template
 - [template](#template)
+- [toString](#tostring)
 - [unsetContextValue](#unsetcontextvalue)
 
 ----------------------------------------
 
 ### __call
 
-`public function __call($name, $arguments): self`
+`public function __call($name, $arguments): mixed`
 
 **Flags:** `public` 
 
@@ -136,6 +145,9 @@ Methods
 
 
 Magic method
+
+
+- @throws `b2r\Component\Exception\InvalidMethodException`
 
 [(Back to index)](#index)
 
@@ -216,6 +228,129 @@ Magic setter
 
 ----------------------------------------
 
+### addExtension
+
+`public function addExtension($extension): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name       | type                   | default | description                      | 
+| ---------- | ---------------------- | ------- | -------------------------------- | 
+| $extension | Twig_Extension, string |         | Extension instance or class name | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addExtensions
+
+`public function addExtensions($extensions): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name        | type     | default | description                                   | 
+| ----------- | -------- | ------- | --------------------------------------------- | 
+| $extensions | iterable |         | [Twig_Extension $instance\|string $className] | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addFilter
+
+`public function addFilter($name, $filter): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name    | type                 | default | description | 
+| ------- | -------------------- | ------- | ----------- | 
+| $name   | string, Twig_Filter  |         |             | 
+| $filter | Closure, Twig_Filter | null    |             | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addFilters
+
+`public function addFilters($filters): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name     | type     | default | description                                         | 
+| -------- | -------- | ------- | --------------------------------------------------- | 
+| $filters | iterable |         | [string $name => Twig_SimpleFilter\|Closure $value] | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addFunction
+
+`public function addFunction($name, $function): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name      | type                   | default | description | 
+| --------- | ---------------------- | ------- | ----------- | 
+| $name     | string, Twig_Function  |         |             | 
+| $function | Closure, Twig_Function | null    |             | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addFunctions
+
+`public function addFunctions($functions): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name       | type     | default | description                                              | 
+| ---------- | -------- | ------- | -------------------------------------------------------- | 
+| $functions | iterable |         | [string $name => Twig_SimpleFunction\|Closure $function] | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addGlobal
+
+`public function addGlobal($name, $value): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name   | type | default | description | 
+| ------ | ---- | ------- | ----------- | 
+| $name  |      |         |             | 
+| $value |      |         |             | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addGlobals
+
+`public function addGlobals($globals): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name     | type     | default | description                    | 
+| -------- | -------- | ------- | ------------------------------ | 
+| $globals | iterable |         | [string $name => mixed $value] | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
 ### bind
 
 `public function bind(): self`
@@ -274,9 +409,6 @@ Bind context value
 `public function clearContext(): self`
 
 **Flags:** `public` 
-
-
-Clear context
 
 [(Back to index)](#index)
 
@@ -372,7 +504,7 @@ Clear context
 
 ### getLoader
 
-`public function getLoader(): b2r\Component\Twig\Loader`
+`public function getLoader(): Twig_Loader_Chain`
 
 **Flags:** `public` 
 
@@ -525,6 +657,19 @@ Set template
 
 
 - @alias [setTemplate](#settemplate)
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### toString
+
+`public function toString(): string`
+
+**Flags:** `public` 
+
+
+- @alias [render](#render)
 
 [(Back to index)](#index)
 

@@ -8,12 +8,15 @@ class ArrayLoaderTest extends Base
 {
     public function testBasic()
     {
-        $loader = new Loader\ArrayLoader();
-        $this->is($loader instanceof Loader\ArrayLoader);
+        $twig = new Twig();
+        $loader = $twig->loader;
 
-        $loader->addTemplate('foo', 'FOO');
-        $loader->addTemplates(['bar' => 'BAR']);
-        $loader->setTemplates(['baz' => 'BAZ']);
+
+        $this->is($loader instanceof \Twig_Loader_Chain);
+
+        $twig->addTemplate('foo', 'FOO');
+        $twig->addTemplates(['bar' => 'BAR']);
+        $twig->setTemplates(['baz' => 'BAZ']);
         
         $this->is($loader->exists('foo'));
         $this->is($loader->exists('bar'));
