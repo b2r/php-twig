@@ -56,6 +56,7 @@ class Twig
      * @param string $name Context name
      * @param mixed $value Context value
      * @return self
+     * @alias bindValue
      */
     public function __set($name, $value)
     {
@@ -69,6 +70,7 @@ class Twig
      * @param array $arguments
      * @return mixed
      * @throws b2r\Component\Exception\InvalidMethodException
+     * @invoke bindValue
      */
     public function __call($name, $arguments)
     {
@@ -134,6 +136,7 @@ class Twig
     }
 
     /**
+     * @param mixed $value
      * @return self
      */
     public function bindValue(string $name, $value)

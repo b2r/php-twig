@@ -14,15 +14,12 @@ Twig composition
 - Context container
 
 
-#### Member docs
-- [Environment](Environment.md)
-
 #### Usage
 
 ```php
 use b2r\Component\Twig\Twig;
 
-$twig = new Twig(__DIR__ . '/templates');
+$twig = new Twig();
 
 $twig->template('hello', 'Hello, {{ name }}');
 echo $twig->name('world'); #=>'Hello, world'
@@ -151,6 +148,7 @@ Magic method
 
 
 - @throws `b2r\Component\Exception\InvalidMethodException`
+- @invoke [bindValue](#bindvalue)
 
 [(Back to index)](#index)
 
@@ -206,6 +204,9 @@ Constructor
 Magic setter
 
 - Assume context value setter
+
+
+- @alias [bindValue](#bindvalue)
 
 [(Back to index)](#index)
 
@@ -474,7 +475,7 @@ Bind context value
 | name   | type   | default | description | 
 | ------ | ------ | ------- | ----------- | 
 | $name  | string |         |             | 
-| $value |        |         |             | 
+| $value | mixed  |         |             | 
 
 [(Back to index)](#index)
 
