@@ -8,11 +8,13 @@ use Twig_Filter;
 use Twig_Function;
 use Twig_Loader_Chain;
 use Twig_Environment;
-//use b2r\Component\Twig\Environment;
 
 trait EnvironmentComposition
 {
-    protected $twig;
+    /**
+     * @var Twig_Environment
+     */
+    protected $twig = null;
 
     protected function initEnvironment(Twig_Loader_Chain $loader, array $options = [])
     {
