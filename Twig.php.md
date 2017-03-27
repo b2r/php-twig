@@ -1,14 +1,11 @@
 # Twig
 
-#### Member docs
-- [Environment](Environment.md)
-
 #### Usage
 
 ```php
 use b2r\Component\Twig\Twig;
 
-$twig = new Twig(__DIR__ . '/templates');
+$twig = new Twig();
 
 $twig->template('hello', 'Hello, {{ name }}');
 echo $twig->name('world'); #=>'Hello, world'
