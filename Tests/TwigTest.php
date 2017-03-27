@@ -21,7 +21,7 @@ class TwigTest extends Base
     public function setup()
     {
         $this->twig = new Twig(__DIR__  . '/templates');
-        $this->twig->addSuffix('.twig');
+        $this->twig->addSuffixes(['.twig']);
     }
 
     public function testBasic()
@@ -52,7 +52,8 @@ class TwigTest extends Base
         $twig = $this->twig;
         $this->is($twig->getLoader() instanceof \Twig_Loader_Chain);
         $this->is($twig->getArrayLoader() instanceof \Twig_Loader_Array);
-        $this->is($twig->getFileSystemLoader() instanceof Loader\FilesystemLoader);
+        $this->is($twig->getFilesystemLoader() instanceof Loader\FilesystemLoader);
+        $this->is($twig->getFileLoader() instanceof Loader\FilesystemLoader);
     }
 
     public function testExtension()
@@ -140,7 +141,7 @@ class TwigTest extends Base
         $this->is($ex, $twig->getContextValue('foo'));
 
         $ex = 'FOOOO';
-        $twig->bind(['foo' => $ex]);
+        $twig->set(['foo' => $ex]);
         $this->is($ex, $twig->getContextValue('foo'));
 
         $ex = 'FOOOOO';
@@ -172,7 +173,7 @@ class TwigTest extends Base
     {
         $twig = $this->twig;
         $env = $twig->getEnvironment();
-        $this->is($env instanceof Environment);
+        $this->is($env instanceof \Twig_Environment);
         $this->is($env, $twig->getEnv());
         $this->is($env, $twig->getEngine());
     }
