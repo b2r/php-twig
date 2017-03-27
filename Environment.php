@@ -36,7 +36,7 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
     /**
      * @var Twig_Loader_Chain
      */
-    protected $loader;
+    protected $loader = null;
 
     /**
      * Constructor
@@ -66,6 +66,11 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
     public function getArrayLoader(): Twig_Loader_Array
     {
         return $this->array;
+    }
+
+    public function getFileLoader(): FilesystemLoader
+    {
+        return $this->filesystem;
     }
 
     public function getFilesystemLoader(): FilesystemLoader
@@ -120,5 +125,21 @@ class Environment extends Twig_Environment implements PropertyMethodDelegatorInt
             $this->array->setTemplate($name, $template);
         }
         return $this;
+    }
+
+    #------------------------------------------------------------
+    # FilesystemLoader Helper
+    #------------------------------------------------------------
+
+    public function addSuffix(string $suffix)
+    {
+        $this->filesystem->addSuffix($suffix);
+        return $this;        
+    }
+
+    public function addSuffixes(array $suffixes)
+    {
+        $this->filesystem->addSuffixes($suffixes);
+        return $this;        
     }
 }
