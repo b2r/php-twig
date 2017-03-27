@@ -4,7 +4,7 @@ b2r\Component\Twig\Twig
 **Flags:** `class` 
 
 #### Index
-[Implements](#implements) | [Uses](#uses) | [Methods](#methods)
+[Uses](#uses) | [Methods](#methods)
 
 Twig composition
 
@@ -79,15 +79,11 @@ Hello, BAZ
 Score: 200
 ```
 
-Implements
-----------
-- b2r\Component\PropertyMethodDelegator\PropertyMethodDelegatorInterface
-
 Uses
 ----------
 - b2r\Component\SimpleAccessor\Getter
-- b2r\Component\PropertyMethodDelegator\PropertyMethodDelegator
 - b2r\Component\Twig\Traits\EnvironmentComposition
+- b2r\Component\Twig\Traits\LoaderComposition
 
 Methods
 ----------
@@ -105,26 +101,33 @@ Methods
 - [addFunctions](#addfunctions)
 - [addGlobal](#addglobal)
 - [addGlobals](#addglobals)
+- [addSuffix](#addsuffix)
+- [addSuffixes](#addsuffixes)
+- [addTemplate](#addtemplate)
+- [addTemplates](#addtemplates)
 - [bind](#bind) Bind context value
 - [bindArray](#bindarray)
 - [bindValue](#bindvalue)
 - [clearContext](#clearcontext)
 - [context](#context)
 - [display](#display)
+- [getArrayLoader](#getarrayloader)
 - [getContext](#getcontext)
 - [getContextValue](#getcontextvalue)
 - [getEngine](#getengine)
 - [getEnv](#getenv)
 - [getEnvironment](#getenvironment)
+- [getFileLoader](#getfileloader)
+- [getFilesystemLoader](#getfilesystemloader)
 - [getLoader](#getloader)
-- [getPropertyMethodDelegatorInfo](#getpropertymethoddelegatorinfo)
 - [getTemplateName](#gettemplatename)
 - [params](#params)
 - [render](#render) Render
-- [resolveDelegateMethod](#resolvedelegatemethod) Resolve delegate method
 - [save](#save) Save renderd string to file
+- [set](#set)
 - [setContextValue](#setcontextvalue)
 - [setTemplate](#settemplate) Set template
+- [setTemplates](#settemplates) Set templates
 - [template](#template)
 - [toString](#tostring)
 - [unsetContextValue](#unsetcontextvalue)
@@ -155,9 +158,15 @@ Magic method
 
 ### __construct
 
-`public function __construct()`
+`public function __construct($paths, $options)`
 
 **Flags:** `public`  `constructor` 
+
+#### Parameters
+| name     | type  | default | description | 
+| -------- | ----- | ------- | ----------- | 
+| $paths   |       | []      |             | 
+| $options | array | []      |             | 
 
 
 Constructor
@@ -351,6 +360,73 @@ Magic setter
 
 ----------------------------------------
 
+### addSuffix
+
+`public function addSuffix($suffix)`
+
+**Flags:** `public` 
+
+#### Parameters
+| name    | type   | default | description | 
+| ------- | ------ | ------- | ----------- | 
+| $suffix | string |         |             | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addSuffixes
+
+`public function addSuffixes($suffixes)`
+
+**Flags:** `public` 
+
+#### Parameters
+| name      | type  | default | description | 
+| --------- | ----- | ------- | ----------- | 
+| $suffixes | array |         |             | 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addTemplate
+
+`public function addTemplate($name, $template)`
+
+**Flags:** `public` 
+
+#### Parameters
+| name      | type   | default | description | 
+| --------- | ------ | ------- | ----------- | 
+| $name     | string |         |             | 
+| $template | string |         |             | 
+
+
+- @alias [setTemplate](#settemplate)
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### addTemplates
+
+`public function addTemplates($templates)`
+
+**Flags:** `public` 
+
+#### Parameters
+| name       | type  | default | description | 
+| ---------- | ----- | ------- | ----------- | 
+| $templates | array |         |             | 
+
+
+- @alias [setTemplates](#settemplates)
+
+[(Back to index)](#index)
+
+----------------------------------------
+
 ### bind
 
 `public function bind(): self`
@@ -446,6 +522,16 @@ Bind context value
 
 ----------------------------------------
 
+### getArrayLoader
+
+`public function getArrayLoader(): Twig_Loader_Array`
+
+**Flags:** `public` 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
 ### getContext
 
 `public function getContext(): array`
@@ -474,7 +560,7 @@ Bind context value
 
 ### getEngine
 
-`public function getEngine(): b2r\Component\Twig\Environment`
+`public function getEngine(): Twig_Environment`
 
 **Flags:** `public` 
 
@@ -484,7 +570,7 @@ Bind context value
 
 ### getEnv
 
-`public function getEnv(): b2r\Component\Twig\Environment`
+`public function getEnv(): Twig_Environment`
 
 **Flags:** `public` 
 
@@ -494,7 +580,27 @@ Bind context value
 
 ### getEnvironment
 
-`public function getEnvironment(): b2r\Component\Twig\Environment`
+`public function getEnvironment(): Twig_Environment`
+
+**Flags:** `public` 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### getFileLoader
+
+`public function getFileLoader(): b2r\Component\Twig\Loader\FilesystemLoader`
+
+**Flags:** `public` 
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### getFilesystemLoader
+
+`public function getFilesystemLoader(): b2r\Component\Twig\Loader\FilesystemLoader`
 
 **Flags:** `public` 
 
@@ -507,16 +613,6 @@ Bind context value
 `public function getLoader(): Twig_Loader_Chain`
 
 **Flags:** `public` 
-
-[(Back to index)](#index)
-
-----------------------------------------
-
-### getPropertyMethodDelegatorInfo
-
-`public static function getPropertyMethodDelegatorInfo(): array`
-
-**Flags:** `public`  `static` 
 
 [(Back to index)](#index)
 
@@ -567,24 +663,6 @@ Render
 
 ----------------------------------------
 
-### resolveDelegateMethod
-
-`public function resolveDelegateMethod($name): array|false`
-
-**Flags:** `public` 
-
-#### Parameters
-| name  | type   | default | description | 
-| ----- | ------ | ------- | ----------- | 
-| $name | string |         | Method name | 
-
-
-Resolve delegate method
-
-[(Back to index)](#index)
-
-----------------------------------------
-
 ### save
 
 `public function save($filename, $name, $context): self`
@@ -600,6 +678,19 @@ Resolve delegate method
 
 
 Save renderd string to file
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### set
+
+`public function set()`
+
+**Flags:** `public` 
+
+
+- @alias [bind](#bind)
 
 [(Back to index)](#index)
 
@@ -638,6 +729,24 @@ Save renderd string to file
 
 
 Set template
+
+[(Back to index)](#index)
+
+----------------------------------------
+
+### setTemplates
+
+`public function setTemplates($templates): self`
+
+**Flags:** `public` 
+
+#### Parameters
+| name       | type  | default | description                        | 
+| ---------- | ----- | ------- | ---------------------------------- | 
+| $templates | array |         | [string $name => string $template] | 
+
+
+Set templates
 
 [(Back to index)](#index)
 
