@@ -7,15 +7,16 @@ use Twig_Extension;
 use Twig_Filter;
 use Twig_Function;
 use Twig_Loader_Chain;
-use b2r\Component\Twig\Environment;
+use Twig_Environment;
+//use b2r\Component\Twig\Environment;
 
 trait EnvironmentComposition
 {
     protected $twig;
 
-    protected function initEnvironment(Environment $twig)
+    protected function initEnvironment(Twig_Loader_Chain $loader, array $options = [])
     {
-        $this->twig = $twig;
+        $this->twig = new Twig_Environment($loader, $options);
     }
 
     /**
@@ -121,23 +122,18 @@ trait EnvironmentComposition
         return $this;
     }
 
-    public function getEngine(): Environment
+    public function getEngine(): Twig_Environment
     {
         return $this->twig;
     }
 
-    public function getEnv(): Environment
+    public function getEnv(): Twig_Environment
     {
         return $this->twig;
     }
 
-    public function getEnvironment(): Environment
+    public function getEnvironment(): Twig_Environment
     {
         return $this->twig;
-    }
-
-    public function getLoader(): Twig_Loader_Chain
-    {
-        return $this->twig->getLoader();
     }
 }
